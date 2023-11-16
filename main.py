@@ -1,7 +1,10 @@
 import traceback
 from doctest import UnexpectedException
 from typing import List
+import sys
+import math
 
+print(sys.path)
 from bullet import Bullet, colors, utils
 
 
@@ -12,10 +15,11 @@ class PurchaseItem(object):
 
 
 def get_total_order_amount(order: List[PurchaseItem]):
-
     """
     The total cost of all the items ordered
     """
+    total_amount = sum(item.price for item in order)
+    return total_amount
 
     raise NotImplementedError(
         "REMOVE the error and RETURN the total amount for the order"
@@ -23,7 +27,6 @@ def get_total_order_amount(order: List[PurchaseItem]):
 
 
 def get_service_charge(order: List[PurchaseItem]):
-
     """
     For every Rs. 100, the service charge amount should increase by 1% of order amount, upto a max of 20%
     Eg:
@@ -33,6 +36,14 @@ def get_service_charge(order: List[PurchaseItem]):
         Order Amount = 1500, Service Charge = 225
         Order Amount = 3000, Service Charge = 600
     """
+    order_amount = get_total_order_amount(order)
+    if order_amount<100:
+        return 0
+    elif order_amount>2000:
+        return (20/100)*order_amount
+    else:
+        service_charge=( ( math.floor( order_amount/100 ) ) * order_amount )/100
+        return service_charge
 
     raise NotImplementedError(
         "REMOVE the error and RETURN service charge amount for the order"
@@ -153,6 +164,7 @@ while True:
     options = list(map(lambda x: str(x), MCDONALDS_FOOD_OPTIONS))
     bullet = Bullet(prompt="Add an item", choices=options, bullet="=> ")
     result = bullet.launch()
+
     utils.clearConsoleUp(7)
     option = get_option_from_result(result, MCDONALDS_FOOD_OPTIONS)
     if result == str(MCDONALDS_FOOD_OPTIONS[-1]):
@@ -161,6 +173,7 @@ while True:
     utils.cprint(
         f"{result} is added to your order", on=colors.background["green"], end="\n"
     )
+    utils.cprint(f"{order} is  your order", on=colors.background["green"], end="\n")
 
 while True:
     options = list(map(lambda x: str(x), MCDONALDS_BEVERAGES_OPTIONS))
@@ -174,6 +187,7 @@ while True:
     utils.cprint(
         f"{result} is added to your order", on=colors.background["green"], end="\n"
     )
+    utils.cprint(f"{order} is  your order", on=colors.background["green"], end="\n")
 
 utils.clearConsoleUp(1)
 print()
